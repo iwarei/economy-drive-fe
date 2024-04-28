@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export type HeaderCellProps = {
   type?: 'text' | 'html';
@@ -14,6 +14,8 @@ export type HeaderCellProps = {
   onClick?: (event: React.MouseEvent<HTMLTableCellElement>) => void;
   onFocus?: React.FocusEventHandler<HTMLTableCellElement>;
   id?: string | number;
+  sortable?: boolean;
+  order?: 'asc' | 'desc' | 'none';
 };
 
 export type HeaderProps = {
@@ -55,6 +57,7 @@ export type TableProps = {
   hover?: boolean;
   border?: boolean;
   shadow?: boolean;
+  sortable?: boolean;
 };
 
 export const Table = ({
@@ -62,12 +65,70 @@ export const Table = ({
   // width,
   // widthFlex,
   className,
-  headerProps,
-  rowProps,
+  headerProps = [],
+  rowProps = [],
   hover = true,
   border = true,
   shadow = true,
+  sortable = false,
 }: TableProps) => {
+  const isAbleSort = Boolean(headerProps?.length === 1 && sortable);
+
+  const [headers, setHeaders] = useState(headerProps);
+  const [rows, setRows] = useState(rowProps);
+
+  if (sortable) {
+    if (headerProps?.length !== 1) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        'No header or more than 2 columns of headers will invalidate the sorting.'
+      );
+    }
+  }
+
+  const tableHeaderClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
+    const rowId = parseInt(
+      e.currentTarget.dataset.rowId ||
+        (e.target as HTMLElement).dataset.rowId ||
+        '-1',
+      10
+    );
+    const colId = parseInt(
+      e.currentTarget.dataset.colId ||
+        (e.target as HTMLElement).dataset.colId ||
+        '-1',
+      10
+    );
+
+    if (!isAbleSort) return;
+
+    const newHeaders = structuredClone(headers);
+    const currentOrder = newHeaders[rowId].cellProps[colId].order;
+    let newOrder: 'asc' | 'desc' | 'none';
+    if (currentOrder === 'asc') {
+      newOrder = 'desc';
+    } else if (currentOrder === 'desc') {
+      newOrder = 'none';
+    } else {
+      newOrder = 'asc';
+    }
+    newHeaders[0].cellProps[colId].order = newOrder;
+    for (let i = 0; i < newHeaders[0].cellProps.length; i += 1) {
+      if (colId !== i) newHeaders[0].cellProps[i].order = 'none';
+    }
+    setHeaders(newHeaders);
+
+    const sortedRows = [...rows].sort((a, b) => {
+      const upperedA = (a.cellProps[colId]?.text || '').toUpperCase();
+      const upperedB = (b.cellProps[colId]?.text || '').toUpperCase();
+      if (newOrder === 'asc' || newOrder === 'none')
+        return upperedA.localeCompare(upperedB);
+      if (newOrder === 'desc') return upperedB.localeCompare(upperedA);
+      return 0;
+    });
+    setRows(sortedRows);
+  };
+
   return (
     <div
       className={`relative overflow-x-auto${
@@ -80,7 +141,7 @@ export const Table = ({
         }`}
       >
         <thead className="text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-          {headerProps?.map((row: HeaderProps, rowIndex: number) => {
+          {headers?.map?.((row: HeaderProps, rowIndex: number) => {
             return (
               <tr key={`h-r${rowIndex + 1}`}>
                 {row.cellProps.map(
@@ -96,20 +157,72 @@ export const Table = ({
                         }}
                         key={`h-r${rowIndex + 1}-c${colIndex + 1}`}
                         onFocus={cell.onFocus}
+                        onClick={tableHeaderClick}
+                        data-col-id={colIndex}
+                        data-row-id={rowIndex}
                       >
-                        {cell.type === 'html' ? (
-                          cell.html
-                        ) : (
-                          <span
-                            style={{
-                              fontWeight: cell.weight,
-                              color: cell.textColor,
-                              backgroundColor: cell.bgColor,
-                            }}
-                          >
-                            {cell.text}
-                          </span>
-                        )}
+                        <span className="flex items-center">
+                          {cell.type === 'html' ? (
+                            cell.html
+                          ) : (
+                            <span
+                              style={{
+                                fontWeight: cell.weight,
+                                color: cell.textColor,
+                                backgroundColor: cell.bgColor,
+                              }}
+                            >
+                              {cell.text}
+                            </span>
+                          )}
+                          {isAbleSort &&
+                            (cell.order === undefined ||
+                              cell.order === 'none') && (
+                              <svg
+                                className="w-4 h-4 text-gray-800 dark:text-white "
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          {isAbleSort && cell.order === 'asc' && (
+                            <svg
+                              className="w-4 h-4 text-gray-800 dark:text-white"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          )}
+                          {isAbleSort && cell.order === 'desc' && (
+                            <svg
+                              className="w-4 h-4 text-gray-800 dark:text-white"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          )}
+                        </span>
                       </th>
                     );
                   }
@@ -119,7 +232,7 @@ export const Table = ({
           })}
         </thead>
         <tbody>
-          {rowProps?.map((rowProp: RowProps, rowIndex: number) => {
+          {rows?.map?.((rowProp: RowProps, rowIndex: number) => {
             return (
               <tr
                 className={`bg-white${
