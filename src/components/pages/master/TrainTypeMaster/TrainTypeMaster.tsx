@@ -74,7 +74,7 @@ export const TrainTypeMaster = () => {
               optionValue={['0', '1', '2']}
             />
           </div>
-          <div className="flex items-center w-fit min-w-max px-2 pt-4">
+          <div className="flex items-center w-fit min-w-max ps-2 pt-4">
             <CommonButton
               text="追加"
               // 押下時アカウント削除確認モーダル非表示

@@ -1,6 +1,6 @@
-import React, { ReactNode, useContext, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IsAuthedContext } from './context/AuthProvider';
+import { useSelector } from 'react-redux';
 
 type RouteAuthGuardProps = {
   children: ReactNode;
@@ -12,13 +12,13 @@ export const RouteAuthGuard = ({
   redirect = '/login',
 }: RouteAuthGuardProps) => {
   const navigate = useNavigate();
-  const { isAuthed } = useContext(IsAuthedContext)!;
+  const isAuthed = useSelector((state: any) => state.user.isAuthed);
 
   useEffect(() => {
     if (!isAuthed) {
       navigate(redirect);
     }
-  }, []);
+  }, [isAuthed]);
 
   if (!isAuthed) {
     return null;

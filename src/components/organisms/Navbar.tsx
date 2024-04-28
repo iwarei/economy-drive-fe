@@ -1,13 +1,7 @@
-import React, {
-  useContext,
-  useState,
-  useLayoutEffect,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { useState, useLayoutEffect, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { IsAuthedContext } from '../../context/AuthProvider';
+import { useSelector } from 'react-redux';
 import { useAuth } from '../../hooks/useAuth';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
 
@@ -58,7 +52,7 @@ const PageTitleAndLogo = () => {
 
 const NavbarLink = ({ link, text, onClick }: NavbarLinkProps) => {
   const navigate = useNavigate();
-  const { isAuthed } = useContext(IsAuthedContext)!;
+  const isAuthed = useSelector((state: any) => state.user.isAuthed);
 
   return !isAuthed ? (
     <li>
@@ -95,7 +89,7 @@ const NavbarWithDropdown = ({
   dropdownLinks,
 }: NavbarWithDropdownProps) => {
   const navigate = useNavigate();
-  const { isAuthed } = useContext(IsAuthedContext)!;
+  const isAuthed = useSelector((state: any) => state.user.isAuthed);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -170,7 +164,7 @@ export const Navbar = ({
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [width, setWidth] = useState<undefined | number>(undefined);
 
-  const { isAuthed } = useContext(IsAuthedContext)!;
+  const isAuthed = useSelector((state: any) => state.user.isAuthed);
   const { logout } = useAuth();
 
   // ナビバー左サイドのロゴ・リンク押下時のイベントハンドラ

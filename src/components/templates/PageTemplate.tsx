@@ -1,13 +1,14 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Navbar } from '../organisms/Navbar';
+import { useSelector } from 'react-redux';
+import { useAuth } from '../../hooks/useAuth';
+import { LoadingContext } from '../../context/LoadingProvider';
+
 import { Alert } from '../atoms/Alert';
 import { Heading } from '../atoms/Heading';
 import { AlertContext } from '../../context/AlertProvider';
 import { Spinner } from '../atoms/Spinner';
-import { IsAuthedContext } from '../../context/AuthProvider';
-import { useAuth } from '../../hooks/useAuth';
-import { LoadingContext } from '../../context/LoadingProvider';
+import { Navbar } from '../organisms/Navbar';
 
 type PageTemplateProps = {
   headerText?: string;
@@ -27,7 +28,7 @@ export const PageTemplate = ({
   const location = useLocation();
   const { alert, setAlert } = useContext(AlertContext)!;
   const { loading } = useContext(LoadingContext)!;
-  const { isAuthed } = useContext(IsAuthedContext)!;
+  const isAuthed = useSelector((state: any) => state.user.isAuthed);
   const { autoLogin } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(enableAutoLogin);
 

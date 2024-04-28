@@ -1,5 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { AlertContext } from '../../context/AlertProvider';
 import { PageTemplate } from '../templates/PageTemplate';
 import { Modal } from '../organisms/Modal';
 import { InputFormWithLabel } from '../molecules/InputFormWithLabel';
@@ -7,13 +9,11 @@ import { PrimaryButton, CommonButton, DangerButton } from '../atoms/Button';
 import { Heading } from '../atoms/Heading';
 import { Block } from '../atoms/Block';
 import { Text } from '../atoms/Text';
-import { AlertContext } from '../../context/AlertProvider';
-import { AuthInfoContext } from '../../context/AuthProvider';
 import { useAuth } from '../../hooks/useAuth';
 
 export const Account = () => {
   const { setAlert, clearAlert } = useContext(AlertContext)!;
-  const { userInfo } = useContext(AuthInfoContext)!;
+  const userInfo = useSelector((state: any) => state.user.userInfo);
   const { getUserInfo, logout } = useAuth();
 
   // アカウント削除確認用モーダルの表示状態
@@ -291,7 +291,7 @@ export const Account = () => {
           <PrimaryButton
             type="button"
             text="更新"
-            className='w-32'
+            className="w-32"
             onClick={updateAccountInfoHandler}
           />
         </div>
