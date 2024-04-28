@@ -116,13 +116,18 @@ export const Table = ({
     for (let i = 0; i < newHeaders[0].cellProps.length; i += 1) {
       if (colId !== i) newHeaders[0].cellProps[i].order = 'none';
     }
+    if (newOrder === 'none') {
+      // 与えられたpropsの順にする
+      setHeaders(headerProps);
+      setRows(rowProps);
+      return;
+    }
     setHeaders(newHeaders);
 
     const sortedRows = [...rows].sort((a, b) => {
       const upperedA = (a.cellProps[colId]?.text || '').toUpperCase();
       const upperedB = (b.cellProps[colId]?.text || '').toUpperCase();
-      if (newOrder === 'asc' || newOrder === 'none')
-        return upperedA.localeCompare(upperedB);
+      if (newOrder === 'asc') return upperedA.localeCompare(upperedB);
       if (newOrder === 'desc') return upperedB.localeCompare(upperedA);
       return 0;
     });
