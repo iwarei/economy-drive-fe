@@ -85,7 +85,11 @@ export const TrainTypeMaster = () => {
           </div>
         </div>
 
-        <Table headerProps={tableHeaderProps} rowProps={tableRowProps} />
+        <Table
+          headerProps={tableHeaderProps}
+          rowProps={tableRowProps}
+          sortable
+        />
       </PageTemplate>
 
       <TrainTypeMasterAddModal

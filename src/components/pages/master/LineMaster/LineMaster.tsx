@@ -46,7 +46,7 @@ export const LineMaster = () => {
           }}
         />
       </div>
-      <Table headerProps={tableHeaderProps} rowProps={tableRowProps} />
+      <Table headerProps={tableHeaderProps} rowProps={tableRowProps} sortable />
       <LineMasterAddModal
         openModal={showLineMasterAddModal}
         setOpenModal={setShowLineMasterAddModal}

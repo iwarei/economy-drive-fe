@@ -50,7 +50,7 @@ export const WardMaster = () => {
           }}
         />
       </div>
-      <Table headerProps={tableHeaderProps} rowProps={tableRowProps} />
+      <Table headerProps={tableHeaderProps} rowProps={tableRowProps} sortable />
       <WardMasterAddModal
         openModal={showWardMasterAddModal}
         setOpenModal={setShowWardMasterAddModal}
