@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { PageTemplate } from '../../../templates/PageTemplate';
-import { Table } from '../../../organisms/Table';
+import {
+  Table,
+  TableProps,
+  HeaderProps,
+  RowProps,
+} from '../../../organisms/Table';
 import { LineMasterAddModal } from './LineMasterAddModal';
 import { CommonButton } from '../../../atoms/Button';
+import { CheckBox } from '../../../atoms/CheckBox';
 
 export const LineMaster = () => {
   const [showLineMasterAddModal, setShowLineMasterAddModal] = useState(false);
-  const tableHeaderProps = [
+  const tableHeaderProps: HeaderProps[] = [
     {
       cellProps: [
         {
@@ -16,24 +22,75 @@ export const LineMaster = () => {
           text: '線名 (かな)',
         },
         {
+          text: '複数路線跨ぎ',
+        },
+        {
           text: 'id',
         },
       ],
     },
   ];
 
-  const tableRowProps = [
+  const tableRowProps: RowProps[] = [
     {
       cellProps: [
-        { text: '鹿児島本線' },
-        { text: 'かごしまほんせん' },
-        { text: '1' },
+        { type: 'text', text: '鹿児島本線' },
+        { type: 'text', text: 'かごしまほんせん' },
+        {
+          type: 'html',
+          html: <CheckBox name="cell1" disabled key="鹿児島本線" />,
+          text: 'no',
+          className: 'px-6 py-4',
+        },
+        { type: 'text', text: '1' },
       ],
     },
     {
-      cellProps: [{ text: '篠栗線' }, { text: 'ささぐりせん' }, { text: '2' }],
+      cellProps: [
+        { type: 'text', text: '篠栗線' },
+        { type: 'text', text: 'ささぐりせん' },
+        {
+          type: 'html',
+          html: <CheckBox name="cell2" disabled key="篠栗線" />,
+          text: 'no',
+          className: 'px-6 py-4',
+        },
+        { type: 'text', text: '2' },
+      ],
+    },
+    {
+      cellProps: [
+        { type: 'text', text: '筑豊本線' },
+        { type: 'text', text: 'ちくほうほんせん' },
+        {
+          type: 'html',
+          html: <CheckBox name="cell3" disabled key="筑豊本線" />,
+          text: 'no',
+          className: 'px-6 py-4',
+        },
+        { type: 'text', text: '3' },
+      ],
+    },
+    {
+      cellProps: [
+        { type: 'text', text: '福北ゆたか線' },
+        { type: 'text', text: 'ふくほくゆたかせん' },
+        {
+          type: 'html',
+          html: <CheckBox name="cell4" checked disabled key="福北ゆたか線" />,
+          text: 'yes',
+          className: 'px-6 py-4',
+        },
+        { type: 'text', text: '4' },
+      ],
     },
   ];
+
+  const tableProps: TableProps = {
+    headerProps: tableHeaderProps,
+    rowProps: tableRowProps,
+    sortable: true,
+  };
 
   return (
     <PageTemplate headerText="線名マスタ">
@@ -46,7 +103,7 @@ export const LineMaster = () => {
           }}
         />
       </div>
-      <Table headerProps={tableHeaderProps} rowProps={tableRowProps} sortable />
+      <Table {...tableProps} />
       <LineMasterAddModal
         openModal={showLineMasterAddModal}
         setOpenModal={setShowLineMasterAddModal}

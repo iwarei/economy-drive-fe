@@ -72,8 +72,6 @@ export const Table = ({
   shadow = true,
   sortable = false,
 }: TableProps) => {
-  const isAbleSort = Boolean(headerProps?.length === 1 && sortable);
-
   const [headers, setHeaders] = useState(headerProps);
   const [rows, setRows] = useState(rowProps);
 
@@ -100,7 +98,7 @@ export const Table = ({
       10
     );
 
-    if (!isAbleSort) return;
+    if (!(headerProps?.length === 1 && sortable)) return;
 
     const newHeaders = structuredClone(headers);
     const currentOrder = newHeaders[rowId].cellProps[colId].order;
@@ -180,7 +178,7 @@ export const Table = ({
                               {cell.text}
                             </span>
                           )}
-                          {isAbleSort &&
+                          {Boolean(headerProps?.length === 1 && sortable) &&
                             (cell.order === undefined ||
                               cell.order === 'none') && (
                               <svg
@@ -197,36 +195,38 @@ export const Table = ({
                                 />
                               </svg>
                             )}
-                          {isAbleSort && cell.order === 'asc' && (
-                            <svg
-                              className="w-4 h-4 text-gray-800 dark:text-white"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          )}
-                          {isAbleSort && cell.order === 'desc' && (
-                            <svg
-                              className="w-4 h-4 text-gray-800 dark:text-white"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          )}
+                          {Boolean(headerProps?.length === 1 && sortable) &&
+                            cell.order === 'asc' && (
+                              <svg
+                                className="w-4 h-4 text-gray-800 dark:text-white"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          {Boolean(headerProps?.length === 1 && sortable) &&
+                            cell.order === 'desc' && (
+                              <svg
+                                className="w-4 h-4 text-gray-800 dark:text-white"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
                         </span>
                       </th>
                     );
